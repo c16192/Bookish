@@ -1,0 +1,5 @@
+-- CREATE TABLE Users(id SERIAL PRIMARY KEY NOT NULL, FirstName text NOT NULL, LastName text NOT NULL, passwordHash text NOT NULL, thumbnail text NOT NULL);
+-- CREATE TABLE Books(id SERIAL PRIMARY KEY NOT NULL, title text, author text, ISBN text);
+-- CREATE TABLE Copies(barcode int PRIMARY KEY NOT NULL, booktype SERIAL REFERENCES Books(id) NOT NULL, borrowerid SERIAL REFERENCES Users(id), borrowDate date, dueDate date);
+-- ALTER TABLE Copies ADD CONSTRAINT notBorrowedNotDue CHECK ((borrowerid IS NOT NULL) OR ((dueDate IS NULL) AND (borrowDate IS NULL)));
+-- ALTER TABLE Copies ADD CONSTRAINT borrowedDue CHECK ((borrowerid IS NULL) OR ((dueDate IS NOT NULL) AND (borrowDate IS NOT NULL)));
