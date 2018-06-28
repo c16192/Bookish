@@ -9,6 +9,7 @@ export class DBConnection {
 
     // get user with given username
     // PRECONDITION: name is a sanitised string (no special symbols)
+    // POSTCONDITION: if user with that username exists, then return user object, otherwise throw error
     public getUser(name: string) {
         return this.db.one(`SELECT * FROM users WHERE username='${name}'`);
     }

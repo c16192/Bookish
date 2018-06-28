@@ -15,7 +15,7 @@ const passport = require("passport");
 app.use(express.static('public'));
 app.use(passport.initialize());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(require('./routes/auth-routes'));
 
 app.get('/', (req: Request, res: Response) => {
