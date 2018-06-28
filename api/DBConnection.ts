@@ -10,6 +10,6 @@ export class DBConnection {
     // get user with given username
     // PRECONDITION: name is a sanitised string (no special symbols)
     public getUser(name: string) {
-        return this.db.any(`SELECT * FROM users WHERE name='${name}'`);
+        return this.db.any(`SELECT * FROM users WHERE username='${name}'`);
     }
 }
