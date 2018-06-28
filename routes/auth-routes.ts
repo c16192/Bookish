@@ -20,6 +20,7 @@ export function initialiseAuthenticationRoutes(dbConnection: DBConnection) {
 
     return {
         router: routes,
-        auth: Auth
+        auth: Auth,
+        AuthCheck: AuthCheck,
     };
 }

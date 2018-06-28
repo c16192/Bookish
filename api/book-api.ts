@@ -74,31 +74,39 @@ export default class BookAPI {
             .json(result);
     }
 
+    public static respondWithLookupResult(response: Response, result: Promise<any>, successMsg: string, errorMsg: string) {
+        this.handleLookupResult(result, successMsg, errorMsg)
+            .then(result => BookAPI.respondToRequest(response, result));
+    }
+
     public getAllBooks = (req: Request, res: Response) => {
-        BookAPI.handleLookupResult(
+        BookAPI.respondWithLookupResult(
+            res,
             this.dbConnection.getAllCopies(),
             'Retrieved all books in the library',
             'Failed to retrieve all books in the library'
-        ).then(result => BookAPI.respondToRequest(res, result));
+        );
     };
 
     public getUserByUserName = (req: Request, res: Response) => {
         if (!checkRequestForProperties(req, res, ['name'])) return;
 
-        BookAPI.handleLookupResult(
+        BookAPI.respondWithLookupResult(
+            res,
             this.dbConnection.getUser(escape(req.query.name)),
             'Retrieved user with given name',
             'Failed to retrieve user'
-        ).then(result => BookAPI.respondToRequest(res, result));
+        );
     }
 
     public getBooksBorrowedByUser = (req: Request, res: Response) => {
         if (!checkRequestForProperties(req, res, ['userid'])) return;
 
-        BookAPI.handleLookupResult(
+        BookAPI.respondWithLookupResult(
+            res,
             this.dbConnection.getBooksBorrowedBy(Number(req.query.userid)),
             'Retrieved books borrowed',
             'Failed to retrieve books borrowed'
-        ).then(result => BookAPI.respondToRequest(res, result));
+        );
     }
 }
