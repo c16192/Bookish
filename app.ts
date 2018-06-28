@@ -20,13 +20,15 @@ const cookieParser = require('cookie-parser');
 //     maxAge: 60 * 60,
 //     keys: ["ajigoejaigjwelglakwejawj"]
 // }));
+app.use('/', express.static('public'));
+app.set('view engine', 'ejs');
+
 app.use(Auth.auth.passport.initialize());
 app.use(Auth.auth.passport.session());
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-
 app.use(Auth.router);
 app.use('/api', initialiseBookAPIRoutes(dbconnect));
 app.use(initialiseAppRoutes());

@@ -3,18 +3,18 @@ import * as path from "path";
 
 export default class ViewController {
     public static showIndex(req: Request, res: Response) {
-        res.sendFile(path.join(__dirname+'/../views/index.html'));
+        res.render('index');
     }
 
     public static getAllBooks(req: Request, res: Response) {
-        res.sendFile(path.join(__dirname+'/../views/index.html'));
+        res.render('index');
     }
 
     public static getUserByUserName(req: Request, res: Response) {
-        res.sendFile(path.join(__dirname+'/../views/index.html'));
+        res.render('index');
     }
 
     public static getBooksBorrowedByUser(req: Request, res: Response) {
-        res.sendFile(path.join(__dirname+'/../views/index.html'));
+        res.render('index');
     }
 }
