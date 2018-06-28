@@ -3,11 +3,18 @@ import {DBConnection} from "../api/DBConnection";
 import * as passportJWT from "passport-jwt";
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
+const cookieExtractor = (req) => {
+    var token = null;
+    if (req && req.cookies) token = req.cookie['jwt'];
+    return token;
+};
 
 export default class Authenticate {
-    public passport = require("passport");
+    public passport;
     public jwtOptions = {
-        jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("jwt"),
+        // jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+        jwtFromRequest: cookieExtractor,
+        // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: 'secret'
     };
     private dbConnection;
@@ -26,7 +33,7 @@ export default class Authenticate {
                 next(null, false);
             }
         });
-        this.passport.use(strategy);
+        this.passport =  require("passport").use(strategy);
     }
 
     public userAuthenticate = (req, res) => {
@@ -38,6 +45,12 @@ export default class Authenticate {
                 if (user.passwordhash === req.body.password) {
                     const payload = {id: user.id};
                     let token = jwt.sign(payload, this.jwtOptions.secretOrKey);
+                    res.cookie('jwt',token);
+                    const cookieOptions = {
+                        httpOnly: true,
+                        expires: 60* 60
+                    }
+                    res.cookie('jwt', token, cookieOptions)
                     res.json(token);
                 } else {
                     res.status(401).json({message: "passwords did not match"});

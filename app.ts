@@ -6,7 +6,7 @@ require('dotenv').config();
 import {Request, Response} from "express"
 import BookAPI from "./api/book-api";
 
-var cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const express = require('express');
 const app = express();
 const dbconnect = new DBConnection();
@@ -14,11 +14,16 @@ const bookAPI = new BookAPI(dbconnect);
 const bodyParser = require("body-parser");
 const Auth = initialiseAuthenticationRoutes(dbconnect);
 
+// app.use(cookieSession({
+//     name: 'session',
+//     maxAge: 60 * 60,
+//     keys: ["ajigoejaigjwelglakwejawj"]
+// }));
 app.use(Auth.auth.passport.initialize());
+app.use(Auth.auth.passport.session());
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
-app.use(cookieParser());
 app.use(Auth.router);
 
 app.get('/', (req: Request, res: Response) => {
