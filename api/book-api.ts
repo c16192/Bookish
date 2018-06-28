@@ -18,7 +18,7 @@ export default class BookAPI {
             .catch(function (err) {
                 res.status(404)
                     .json({
-                        status: 'failure',
+                        status: 'error',
                         error: err,
                         message: 'Failed to retrieve all books in the library'
                     });
