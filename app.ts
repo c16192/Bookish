@@ -13,7 +13,7 @@ const dbconnect = new DBConnection();
 const bookAPI = new BookAPI(dbconnect);
 const bodyParser = require("body-parser");
 const Auth = initialiseAuthenticationRoutes(dbconnect);
-
+const cookieParser = require('cookie-parser');
 // app.use(cookieSession({
 //     name: 'session',
 //     maxAge: 60 * 60,
@@ -24,6 +24,7 @@ app.use(Auth.auth.passport.session());
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
+app.use(cookieParser());
 app.use(Auth.router);
 
 app.get('/', (req: Request, res: Response) => {

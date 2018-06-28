@@ -13,7 +13,7 @@ export function initialiseAuthenticationRoutes(dbConnection: DBConnection) {
         res.sendFile(path.join(__dirname + '/../views/login.html'));
     });
 
-    routes.get("/account", Auth.passport.authenticate('jwt', {session: true}), (req, res) => {
+    routes.get("/account", Auth.passport.authenticate('jwt', {session: false}), (req, res) => {
         console.log(req.get('Authorization'));
         res.json("Success! You can not see this without a token");
     });

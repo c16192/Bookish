@@ -4,8 +4,9 @@ import * as passportJWT from "passport-jwt";
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
 const cookieExtractor = (req) => {
-    var token = null;
-    if (req && req.cookies) token = req.cookie['jwt'];
+    let token = null;
+    token = req.cookies['jwt'];
+    console.log(token);
     return token;
 };
 
@@ -34,6 +35,9 @@ export default class Authenticate {
             }
         });
         this.passport =  require("passport").use(strategy);
+        this.passport.serializeUser((user,done)=>{
+           done(null, user);
+        });
     }
 
     public userAuthenticate = (req, res) => {
@@ -45,12 +49,11 @@ export default class Authenticate {
                 if (user.passwordhash === req.body.password) {
                     const payload = {id: user.id};
                     let token = jwt.sign(payload, this.jwtOptions.secretOrKey);
-                    res.cookie('jwt',token);
                     const cookieOptions = {
-                        httpOnly: true,
+                        httpOnly: false,
                         expires: 60* 60
                     }
-                    res.cookie('jwt', token, cookieOptions)
+                    res.cookie('jwt', token, cookieOptions);
                     res.json(token);
                 } else {
                     res.status(401).json({message: "passwords did not match"});
