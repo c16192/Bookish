@@ -32,19 +32,16 @@ export default class Authenticate {
     }
 
     public userAuthenticate = (req, res) => {
-        let user;
         if (req.body.name && req.body.password) {
             const name = req.body.name;
             const password = req.body.password;
-            console.log(name, password);
             //TODO: restructure this
-            this.dbConnection.getUser(name).then((user)=>{
-                console.log(user.passwordhash);
-                console.log(req.body.password);
+            this.dbConnection.getUser(name).then((users)=>{
+                let user = users[0]
                 if (user.passwordhash === req.body.password) {
                     const payload = {id: user.id};
                     const token = jwt.sign(payload, this.jwtOptions.secretOrKey);
-                    res.json({message: "ok", token: token});
+                    res.json(token);
                 } else {
                     res.status(401).json({message: "passwords did not match"});
                 }

@@ -10,13 +10,13 @@ const app = express();
 const dbconnect = new DBConnection();
 const bookAPI = new BookAPI(dbconnect);
 const bodyParser = require("body-parser");
-const passport = require("passport");
+const Auth = require('./routes/auth-routes');
 
 app.use(express.static('public'));
-app.use(passport.initialize());
+app.use(Auth.auth.passport.initialize());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
-app.use(require('./routes/auth-routes'));
+app.use(Auth.router);
 
 app.get('/', (req: Request, res: Response) => {
     res.sendFile(__dirname+'/views/index.html');
