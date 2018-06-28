@@ -1,12 +1,18 @@
 import {Request, Response} from "express"
-
-const pgp = require('pg-promise')(/*options*/);
-const db = pgp(process.env.POSTGRES_URI);
+import {DBConnection} from "./DBConnection";
 
 export default class BookAPI {
+    private dbConnection;
 
-    public static getAllBooks(req: Request, res: Response) {
-        db.any('select * from Copies')
+    constructor(db?: DBConnection) {
+        if (db === undefined) {
+            db = new DBConnection();
+        }
+        this.dbConnection = db;
+    }
+
+    public getAllBooks(req: Request, res: Response) {
+        this.dbConnection.getAllCopies()
             .then(function (data) {
                 res.status(200)
                     .json({
@@ -23,5 +29,5 @@ export default class BookAPI {
                         message: 'Failed to retrieve all books in the library'
                     });
             });
-}
+    }
 }

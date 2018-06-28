@@ -14,9 +14,14 @@
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
+    "passport-jwt": "^4.0.0",
     "pg-promise": "^8.4.4"
   },
   "devDependencies": {
-    "@types/express": "^4.16.0"
+    "@types/dotenv": "^4.0.3",
+    "@types/express": "^4.16.0",
+    "@types/jsonwebtoken": "^7.2.7",
+    "@types/passport-jwt": "^3.0.1",
+    "@types/pg-promise": "^5.4.3"
   }
 }
