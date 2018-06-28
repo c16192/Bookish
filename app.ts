@@ -1,4 +1,5 @@
 import {DBConnection} from "./api/DBConnection";
+import {initialiseAuthenticationRoutes} from "./routes/auth-routes";
 
 require('dotenv').config();
 
@@ -16,7 +17,7 @@ app.use(express.static('public'));
 app.use(passport.initialize());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(require('./routes/auth-routes'));
+app.use(initialiseAuthenticationRoutes(dbconnect));
 
 app.get('/', (req: Request, res: Response) => {
     res.sendFile(__dirname+'/views/index.html');
