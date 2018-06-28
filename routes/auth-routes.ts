@@ -1,3 +1,5 @@
+import {DBConnection} from "../api/DBConnection";
+
 const routes = require('express').Router();
 const passport = require("passport");
 const path = require('path');
@@ -7,7 +9,8 @@ routes.post("/login", (req, res) => {
     if(req.body.name && req.body.password){
         const name = req.body.name;
         const password = req.body.password;
-        user = users.findIndex(users, {name: name});
+        //TODO: restructure this
+        user = (new DBConnection().getUser(name));
     }
     // usually this would be a database call:
     if(!user){
