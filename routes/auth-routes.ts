@@ -1,4 +1,5 @@
 import Authenticate from "../auth/auth";
+import {DBConnection} from "../api/DBConnection";
 
 const routes = require('express').Router();
 const path = require('path');

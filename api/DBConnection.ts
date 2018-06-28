@@ -12,4 +12,14 @@ export class DBConnection {
     public getUser(name: string) {
         return this.db.any(`SELECT * FROM users WHERE username='${name}'`);
     }
+
+    public getBooksBorrowedBy(uid: number) {
+        return this.db.any(
+        `SELECT books.id AS "bookId", 
+            books.title AS "title", 
+            books.author AS "author", 
+            books.ISBN AS "ISBN",
+            copies.duedate AS "dueDate" 
+        FROM copies INNER JOIN  books ON books.id = copies.book`)
+    }
 }
