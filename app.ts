@@ -1,12 +1,15 @@
+require('dotenv').config();
+
 import {Request, Response} from "express"
 import BookAPI from "./api/book-api";
 
 const express = require('express');
 const app = express();
-require('dotenv').config();
+
+app.use(express.static('public'));
 
 app.get('/', (req: Request, res: Response) => {
-    res.send('Hello World!')
+    res.sendFile(__dirname+'/views/index.html');
 });
 
 app.get('/allBooks', BookAPI.getAllBooks);
