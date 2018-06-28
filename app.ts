@@ -6,6 +6,7 @@ require('dotenv').config();
 import {Request, Response} from "express"
 import BookAPI from "./api/book-api";
 import {initialiseBookAPIRoutes} from "./routes/api-routes";
+import {initialiseAppRoutes} from "./routes/app-routes";
 
 const cookieSession = require('cookie-session');
 const express = require('express');
@@ -27,11 +28,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(Auth.router);
-app.use(initialiseBookAPIRoutes(dbconnect));
-
-app.get('/', (req: Request, res: Response) => {
-    res.sendFile(__dirname+'/views/index.html');
-});
-
+app.use('/api', initialiseBookAPIRoutes(dbconnect));
+app.use(initialiseAppRoutes());
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'));

@@ -1,4 +1,3 @@
-import Authenticate from "../auth/auth";
 import BookAPI from "../api/book-api";
 import {DBConnection} from "../api/DBConnection";
 
