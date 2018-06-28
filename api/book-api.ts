@@ -1,7 +1,7 @@
 import {Request, Response} from "express"
 
-const pgp = require('pg-promise')(/*options*/)
-const db = pgp(process.env.POSTGRES_URI)
+const pgp = require('pg-promise')(/*options*/);
+const db = pgp(process.env.POSTGRES_URI);
 
 export default class BookAPI {
 
