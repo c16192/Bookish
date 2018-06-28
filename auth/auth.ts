@@ -5,8 +5,7 @@ const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
 const cookieExtractor = (req) => {
     let token = null;
-    token = req.cookies['jwt'];
-    console.log(token);
+    if(req && req.cookies) token = req.cookies['jwt'];
     return token;
 };
 
@@ -35,9 +34,6 @@ export default class Authenticate {
             }
         });
         this.passport =  require("passport").use(strategy);
-        this.passport.serializeUser((user,done)=>{
-           done(null, user);
-        });
     }
 
     public userAuthenticate = (req, res) => {

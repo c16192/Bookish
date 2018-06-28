@@ -6,14 +6,14 @@ import {DBConnection} from "../api/DBConnection";
 
 export function initialiseAuthenticationRoutes(dbConnection: DBConnection) {
     const Auth = new Authenticate(dbConnection);
-
+    const AuthCheck = Auth.passport.authenticate('jwt', {session: false});
     routes.post("/login", Auth.userAuthenticate);
 
     routes.get('/login', (req, res) => {
         res.sendFile(path.join(__dirname + '/../views/login.html'));
     });
 
-    routes.get("/account", Auth.passport.authenticate('jwt', {session: false}), (req, res) => {
+    routes.get("/account", AuthCheck, (req, res) => {
         console.log(req.get('Authorization'));
         res.json("Success! You can not see this without a token");
     });
