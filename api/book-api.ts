@@ -29,7 +29,7 @@ export default class BookAPI {
                         message: 'Failed to retrieve all books in the library'
                     });
             });
-    }
+    };
 
     public getUserByUserName = (req: Request, res: Response) => {
         if ((!req.hasOwnProperty('query')) || (!req.query.hasOwnProperty('name'))) {
