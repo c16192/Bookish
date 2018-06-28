@@ -1,4 +1,5 @@
 import {DBConnection} from "./api/DBConnection";
+import {initialiseAuthenticationRoutes} from "./routes/auth-routes";
 
 require('dotenv').config();
 
@@ -10,7 +11,7 @@ const app = express();
 const dbconnect = new DBConnection();
 const bookAPI = new BookAPI(dbconnect);
 const bodyParser = require("body-parser");
-const Auth = require('./routes/auth-routes');
+const Auth = initialiseAuthenticationRoutes(dbconnect);
 
 app.use(express.static('public'));
 app.use(Auth.auth.passport.initialize());

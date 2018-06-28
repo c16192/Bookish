@@ -20,7 +20,6 @@ export default class Authenticate {
         this.dbConnection = db;
         const strategy = new JwtStrategy(this.jwtOptions, (jwt_payload, next) => {
             console.log('payload received', jwt_payload);
-            //TODO: restructure this
             const user = this.dbConnection.getUser(jwt_payload.id);
             if (user) {
                 next(null, user);
@@ -35,9 +34,8 @@ export default class Authenticate {
         if (req.body.name && req.body.password) {
             const name = req.body.name;
             const password = req.body.password;
-            //TODO: restructure this
-            this.dbConnection.getUser(name).then((users)=>{
-                let user = users[0]
+            console.log(name, password);
+            this.dbConnection.getUser(name).then((user)=>{
                 if (user.passwordhash === req.body.password) {
                     const payload = {id: user.id};
                     const token = jwt.sign(payload, this.jwtOptions.secretOrKey);

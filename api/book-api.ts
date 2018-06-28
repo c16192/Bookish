@@ -1,6 +1,33 @@
 import {Request, Response} from "express"
 import {DBConnection} from "./DBConnection";
 
+type statusMessage = "success" | "failure" | "error";
+interface LookupResult {
+    status: statusMessage,
+    data?: any,
+    err?: any,
+    message: string
+}
+
+function getStatusCode(status: statusMessage) {
+    if (status === "success") {
+        return 200;
+    }
+    return 404;
+}
+
+function checkRequestForProperties(req: Request, res: Response, properties: string[]) {
+    if ((!req.hasOwnProperty('query')) || (!req.query.hasOwnProperty('name'))) {
+        res.status(200)
+            .json({
+                status: 'error',
+                message: 'invalid request'
+            });
+        return false;
+    }
+    return true;
+}
+
 export default class BookAPI {
     private dbConnection;
 
@@ -11,58 +38,44 @@ export default class BookAPI {
         this.dbConnection = db;
     }
 
-    public getAllBooks = (req: Request, res: Response) => {
-        this.dbConnection.getAllCopies()
-            .then(function (data) {
-                res.status(200)
-                    .json({
-                        status: 'success',
-                        data: data,
-                        message: 'Retrieved all books in the library'
-                    });
+    public static handleLookupResult(result: Promise<any>, successMsg: string, errorMsg: string): Promise<LookupResult> {
+        return result
+            .then(data => {
+                return {
+                    status: ("success" as statusMessage),
+                    data: data,
+                    message: successMsg
+                };
             })
-            .catch(function (err) {
-                res.status(404)
-                    .json({
-                        status: 'error',
-                        error: err,
-                        message: 'Failed to retrieve all books in the library'
-                    });
+            .catch(err => {
+                return {
+                    status: ("error" as statusMessage),
+                    err: err,
+                    message: errorMsg
+                };
             });
+    }
+
+    public static respondToRequest(res: Response, result: LookupResult) {
+        res.status(getStatusCode(result.status))
+            .json(result);
+    }
+
+    public getAllBooks = (req: Request, res: Response) => {
+        BookAPI.handleLookupResult(
+            this.dbConnection.getAllCopies(),
+            'Retrieved all books in the library',
+            'Failed to retrieve all books in the library'
+        ).then(result => BookAPI.respondToRequest(res, result));
     };
 
     public getUserByUserName = (req: Request, res: Response) => {
-        if ((!req.hasOwnProperty('query')) || (!req.query.hasOwnProperty('name'))) {
-            res.status(200)
-                .json({
-                    status: 'error',
-                    message: 'invalid request'
-                });
-        }
-        this.dbConnection.getUser(escape(req.query.name))
-            .then(function (data) {
-                if (data.length == 0) {
-                    res.status(200)
-                        .json({
-                            status: 'failure',
-                            message: 'No such user'
-                        });
-                    return;
-                }
-                res.status(200)
-                    .json({
-                        status: 'success',
-                        data: data[0],
-                        message: 'Retrieved user with given name'
-                    });
-            })
-            .catch(function (err) {
-                res.status(404)
-                    .json({
-                        status: 'error',
-                        error: err,
-                        message: 'Failed to retrieve user -- internal error'
-                    });
-            });
+        if (!checkRequestForProperties(req, res, ['name'])) return;
+
+        BookAPI.handleLookupResult(
+            this.dbConnection.getUser(escape(req.query.name)),
+            'Retrieved user with given name',
+            'Failed to retrieve user'
+        ).then(result => BookAPI.respondToRequest(res, result));
     }
 }
