@@ -1,4 +1,6 @@
 var routes = require('express').Router();
+var passport = require("passport");
+var path = require('path');
 routes.post("/login", function (req, res) {
     var user;
     if (req.body.name && req.body.password) {
@@ -18,6 +20,9 @@ routes.post("/login", function (req, res) {
     else {
         res.status(401).json({ message: "passwords did not match" });
     }
+});
+routes.get('/login', function (req, res) {
+    res.sendFile(path.join(__dirname + '/../views/login.html'));
 });
 routes.get("/secret", passport.authenticate('jwt', { session: false }), function (req, res) {
     console.log(req.get('Authorization'));

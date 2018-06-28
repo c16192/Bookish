@@ -1,4 +1,6 @@
 const routes = require('express').Router();
+const passport = require("passport");
+const path = require('path');
 
 routes.post("/login", (req, res) => {
     let user;
@@ -18,6 +20,10 @@ routes.post("/login", (req, res) => {
     } else {
         res.status(401).json({message:"passwords did not match"});
     }
+});
+
+routes.get('/login', (req, res) => {
+   res.sendFile(path.join(__dirname + '/../views/login.html'));
 });
 
 routes.get("/secret", passport.authenticate('jwt', { session: false }), function(req, res){

@@ -5,11 +5,12 @@ var book_api_1 = require("./api/book-api");
 var express = require('express');
 var app = express();
 var bodyParser = require("body-parser");
+var passport = require("passport");
 app.use(express.static('public'));
 app.use(passport.initialize());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(require('routes/auth-routes'));
+app.use(require('./routes/auth-routes'));
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/views/index.html');
 });
