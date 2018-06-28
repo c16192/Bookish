@@ -33,5 +33,6 @@ app.get('/', (req: Request, res: Response) => {
 
 app.get('/allBooks', bookAPI.getAllBooks);
 app.get('/getUser', bookAPI.getUserByUserName);
+app.get('/getBooksBorrowed', bookAPI.getBooksBorrowedByUser);
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'));

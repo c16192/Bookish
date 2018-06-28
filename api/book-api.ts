@@ -1,5 +1,6 @@
 import {Request, Response} from "express"
 import {DBConnection} from "./DBConnection";
+import {Book} from "./DataTypes";
 
 type statusMessage = "success" | "failure" | "error";
 interface LookupResult {
@@ -17,14 +18,26 @@ function getStatusCode(status: statusMessage) {
 }
 
 function checkRequestForProperties(req: Request, res: Response, properties: string[]) {
-    if ((!req.hasOwnProperty('query')) || (!req.query.hasOwnProperty('name'))) {
-        res.status(200)
+    if ((!req.hasOwnProperty('query'))) {
+        res.status(404)
             .json({
                 status: 'error',
                 message: 'invalid request'
             });
         return false;
     }
+
+    for (let prop of properties) {
+        if (!req.query.hasOwnProperty(prop)) {
+            res.status(404)
+                .json({
+                    status: 'error',
+                    message: `property "${prop}" is required`
+                })
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -76,6 +89,16 @@ export default class BookAPI {
             this.dbConnection.getUser(escape(req.query.name)),
             'Retrieved user with given name',
             'Failed to retrieve user'
+        ).then(result => BookAPI.respondToRequest(res, result));
+    }
+
+    public getBooksBorrowedByUser = (req: Request, res: Response) => {
+        if (!checkRequestForProperties(req, res, ['userid'])) return;
+
+        BookAPI.handleLookupResult(
+            this.dbConnection.getBooksBorrowedBy(Number(req.query.userid)),
+            'Retrieved books borrowed',
+            'Failed to retrieve books borrowed'
         ).then(result => BookAPI.respondToRequest(res, result));
     }
 }
