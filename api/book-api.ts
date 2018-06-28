@@ -32,15 +32,21 @@ export default class BookAPI {
     }
 
     public getUserByUserName = (req: Request, res: Response) => {
-        //TODO: sanitise input
-        this.dbConnection.getUser(req.query.name)
+        if ((!req.hasOwnProperty('query')) || (!req.query.hasOwnProperty('name'))) {
+            res.status(200)
+                .json({
+                    status: 'error',
+                    message: 'invalid request'
+                });
+        }
+        this.dbConnection.getUser(escape(req.query.name))
             .then(function (data) {
                 if (data.length == 0) {
                     res.status(200)
                         .json({
                             status: 'failure',
                             message: 'No such user'
-                        })
+                        });
                     return;
                 }
                 res.status(200)
@@ -55,7 +61,7 @@ export default class BookAPI {
                     .json({
                         status: 'error',
                         error: err,
-                        message: 'Failed to retrieve all books in the library'
+                        message: 'Failed to retrieve user -- internal error'
                     });
             });
     }

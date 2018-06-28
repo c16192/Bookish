@@ -24,8 +24,14 @@ var BookAPI = /** @class */ (function () {
             });
         };
         this.getUserByUserName = function (req, res) {
-            //TODO: sanitise input
-            _this.dbConnection.getUser(req.query.name)
+            if ((!req.hasOwnProperty('query')) || (!req.query.hasOwnProperty('name'))) {
+                res.status(200)
+                    .json({
+                    status: 'error',
+                    message: 'invalid request'
+                });
+            }
+            _this.dbConnection.getUser(escape(req.query.name))
                 .then(function (data) {
                 if (data.length == 0) {
                     res.status(200)
@@ -47,7 +53,7 @@ var BookAPI = /** @class */ (function () {
                     .json({
                     status: 'error',
                     error: err,
-                    message: 'Failed to retrieve all books in the library'
+                    message: 'Failed to retrieve user -- internal error'
                 });
             });
         };
