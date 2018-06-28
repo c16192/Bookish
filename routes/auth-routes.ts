@@ -3,9 +3,10 @@ import Authenticate from "../auth/auth";
 const routes = require('express').Router();
 const path = require('path');
 import * as passport from 'passport';
-import * as jwt from 'jsonwebtoken';
 
-routes.post("/login", new Authenticate().userAuthenticate);
+const Auth = new Authenticate();
+
+routes.post("/login", Auth.userAuthenticate);
 
 routes.get('/login', (req, res) => {
    res.sendFile(path.join(__dirname + '/../views/login.html'));
