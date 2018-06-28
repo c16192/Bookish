@@ -1,5 +1,4 @@
 import * as jwt from 'jsonwebtoken';
-import * as passport from 'passport';
 import {DBConnection} from "../api/DBConnection";
 import * as passportJWT from "passport-jwt";
 const ExtractJwt = passportJWT.ExtractJwt;
@@ -27,7 +26,7 @@ export default class Authenticate {
                 next(null, false);
             }
         });
-        passport.use(strategy);
+        this.passport.use(strategy);
     }
 
     public userAuthenticate = (req, res) => {
@@ -38,7 +37,7 @@ export default class Authenticate {
             this.dbConnection.getUser(name).then((user)=>{
                 if (user.passwordhash === req.body.password) {
                     const payload = {id: user.id};
-                    const token = jwt.sign(payload, this.jwtOptions.secretOrKey);
+                    let token = jwt.sign(payload, this.jwtOptions.secretOrKey);
                     res.json(token);
                 } else {
                     res.status(401).json({message: "passwords did not match"});
