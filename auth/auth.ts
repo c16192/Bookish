@@ -26,12 +26,14 @@ export default class Authenticate {
         this.dbConnection = db;
         const strategy = new JwtStrategy(this.jwtOptions, (jwt_payload, next) => {
             console.log('payload received', jwt_payload);
-            const user = this.dbConnection.getUser(jwt_payload.id);
-            if (user) {
-                next(null, user);
-            } else {
-                next(null, false);
-            }
+            this.dbConnection.getUserById(jwt_payload.id).then((user)=>{
+                console.log(user);
+                if (user) {
+                    next(null, user);
+                } else {
+                    next(null, false);
+                }
+            });
         });
         this.passport =  require("passport").use(strategy);
     }
@@ -49,8 +51,9 @@ export default class Authenticate {
                         httpOnly: false,
                         expires: 60* 60
                     }
+                    console.log("token: "+token)
                     res.cookie('jwt', token, cookieOptions);
-                    res.json(token);
+                    res.redirect('/');
                 } else {
                     res.status(401).json({message: "passwords did not match"});
                 }
