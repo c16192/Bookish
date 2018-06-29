@@ -1,6 +1,8 @@
 import {Request, Response} from "express"
 import {DBConnection} from "./DBConnection";
-import {Book} from "./DataTypes";
+import * as log4js from 'log4js';
+
+const logger = log4js.getLogger('bookAPI');
 
 type statusMessage = "success" | "failure" | "error";
 interface LookupResult {
@@ -33,7 +35,7 @@ function checkRequestForProperties(req: Request, res: Response, properties: stri
                 .json({
                     status: 'error',
                     message: `property "${prop}" is required`
-                })
+                });
             return false;
         }
     }
@@ -70,6 +72,7 @@ export default class BookAPI {
     }
 
     public static respondToRequest(res: Response, result: LookupResult) {
+        logger.debug("Sending result: "+JSON.stringify(result));
         res.status(getStatusCode(result.status))
             .json(result);
     }
@@ -80,6 +83,7 @@ export default class BookAPI {
     }
 
     public getAllBooks = (req: Request, res: Response) => {
+        logger.debug("Incoming request on /allBooks endpoint: "+req);
         BookAPI.respondWithLookupResult(
             res,
             this.dbConnection.getAllCopies(),
@@ -89,6 +93,7 @@ export default class BookAPI {
     };
 
     public getUserByUserName = (req: Request, res: Response) => {
+        logger.debug("Incoming request on /getUser endpoint: " + req);
         if (!checkRequestForProperties(req, res, ['name'])) return;
 
         BookAPI.respondWithLookupResult(
@@ -97,9 +102,10 @@ export default class BookAPI {
             'Retrieved user with given name',
             'Failed to retrieve user'
         );
-    }
+    };
 
     public getBooksBorrowedByUser = (req: Request, res: Response) => {
+        logger.debug("Incoming request on /getBooksBorrowed endpoint: " + req);
         if (!checkRequestForProperties(req, res, ['userid'])) return;
 
         BookAPI.respondWithLookupResult(
@@ -108,5 +114,5 @@ export default class BookAPI {
             'Retrieved books borrowed',
             'Failed to retrieve books borrowed'
         );
-    }
+    };
 }

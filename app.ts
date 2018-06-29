@@ -1,5 +1,6 @@
 import {DBConnection} from "./api/DBConnection";
 import {initialiseAuthenticationRoutes} from "./routes/auth-routes";
+import * as log4js from 'log4js';
 
 require('dotenv').config();
 
@@ -20,6 +21,19 @@ const cookieParser = require('cookie-parser');
 //     maxAge: 60 * 60,
 //     keys: ["ajigoejaigjwelglakwejawj"]
 // }));
+
+log4js.configure({
+    appenders: {
+        file: { type: 'fileSync', filename: 'logs/debug.log' },
+        console: { type: 'console' }
+    },
+    categories: {
+        default: { appenders: ['file', 'console'], level: 'debug'},
+        bookAPI: { appenders: ['file', 'console'], level: 'debug'}
+    }
+});
+const logger = log4js.getLogger();
+
 app.use('/', express.static('public'));
 app.set('view engine', 'ejs');
 
@@ -33,4 +47,5 @@ app.use(Auth.router);
 app.use('/api', initialiseBookAPIRoutes(dbconnect));
 app.use(initialiseAppRoutes());
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+logger.info("Starting listening on port 3000");
+app.listen(3000, () => logger.info('Started listening on port 3000'));
